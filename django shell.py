@@ -1,27 +1,28 @@
-from django.db import models
 from django.contrib.auth.models import User
-from news.models import Author
-from news.models import Category
-from news.models import Post
-from news.models import PostCategory
-from news.models import Comment
-from django.db.models import Max
 
-1. 
+from news.models import Author, Category, Comment, Post, PostCategory
+
+user_1, user_2 = User.objects.filter()
+author_1, author_2 = Author.objects.filter()
+cat_it, cat_sci, cat_gms, cat_spt = Category.objects.filter()
+post_neuroimp, post_vrh, post_django = Post.objects.filter()
+comm_1, comm_2, comm_3, comm_4 = Comment.objects.filter()
+
+# 1. 
 user_1 = User.objects.create_user(username='Dan Abnett',  password='123')
 user_2 = User.objects.create_user(username='Graham McNeill', password='123')
 
-2.
+# 2.
 author_1 = Author.objects.create(user=user_1)
 author_2 = Author.objects.create(user=user_2)
 
-3.
+# 3.
 cat_it = Category.objects.create(name='it')
 cat_sci = Category.objects.create(name='science')
 cat_gms = Category.objects.create(name='games')
 cat_spt = Category.objects.create(name='sport')
 
-4.
+# 4.
 post_neuroimp = Post.objects.create(
     author=author_1,
     post_type=Post.article,
@@ -43,14 +44,14 @@ post_django = Post.objects.create(
     content='plain text',
 )
 
-5.
+ # 5.
 PostCategory.objects.create(post=post_neuroimp, category=cat_sci)
 PostCategory.objects.create(post=post_neuroimp, category=cat_spt)
 PostCategory.objects.create(post=post_vrh, category=cat_gms)
 PostCategory.objects.create(post=post_vrh, category=cat_it)
 PostCategory.objects.create(post=post_django, category=cat_it)
 
-6.
+# 6.
 comm_1 = Comment.objects.create(
     post=post_neuroimp,
     user=user_2,
@@ -75,20 +76,20 @@ comm_4 = Comment.objects.create(
     content='молодцы',
 )
 
-7.
+# 7.
 post_neuroimp.like()
-post_django.dislike()
-comm_1.like()
+post_vrh.dislike()
 comm_1.like()
 
-8.
+# 8.
 author_1.update_rating()
 author_2.update_rating()
 
-9.
-q1 = Author.objects.order_by('id')[0]
+# 9.
+q1 = Author.objects.order_by('-rating')[0]
 r1 = str(q1.user.username)
 r2 = str(q1.rating)
 r3 = f'{r1} - {r2}'
+r3
 
-10.
+# 10.

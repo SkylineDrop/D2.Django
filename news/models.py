@@ -1,22 +1,25 @@
 from django.db import models
+from django.db.models import F
 from django.contrib.auth.models import User
 
 class RatingMixin:
 
     def like(self):
-        self.rating += 1
+        self.rating = F('rating') + 1
         self.save()
+        self.refresh_from_db()
 
     def dislike(self):
-        self.rating -= 1
+        self.rating = F('rating') - 1
         self.save()
+        self.refresh_from_db()
 
 class Author(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    rating = models.IntegerField()
+    rating = models.IntegerField(default=0)
 
     def update_rating(self):
-        post_rating = Post.objects.filter(author = self).aggregate(models.Sum('raiting'))
+        post_rating = Post.objects.filter(author = self).aggregate(models.Sum('rating'))
         total = post_rating['rating__sum'] * 3
 
         comment_rating = Comment.objects.filter(user = self.user).aggregate(models.Sum('rating'))
@@ -24,7 +27,7 @@ class Author(models.Model):
 
         temp = Comment.objects.filter(post__in=Post.objects.filter(author=self)).aggregate(models.Sum('rating'))
 
-        total += temp
+        total += temp['rating__sum']
         self.rating = total
         self.save()
 
