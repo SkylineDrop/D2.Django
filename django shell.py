@@ -86,10 +86,20 @@ author_1.update_rating()
 author_2.update_rating()
 
 # 9.
-q1 = Author.objects.order_by('-rating')[0]
-r1 = str(q1.user.username)
-r2 = str(q1.rating)
-r3 = f'{r1} - {r2}'
-r3
+'{0.user.username} {0.rating}'.format(Author.objects.order_by('-rating')[0])
 
 # 10.
+best_post = Post.objects.filter(post_type=Post.article).order_by('-rating')[0]
+post_date = best_post.created_at.strftime("%A %d. %B %Y")
+post_author_name = best_post.author.user.username
+post_current_rating = best_post.rating
+post_header = best_post.header
+post_prev = best_post.preview()
+
+res = f'{post_date} {post_author_name} {post_current_rating} {post_header} {post_prev}'
+
+# 11.
+comments = Comment.objects.filter(post=best_post)
+res = [f'{comment.created_at.strftime("%A %d. %B %Y")} {comment.user} {comment.rating} {comment.content}' for comment in comments]
+res[0]
+res[1]
